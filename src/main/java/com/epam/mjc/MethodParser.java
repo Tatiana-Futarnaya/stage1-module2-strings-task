@@ -1,5 +1,9 @@
 package com.epam.mjc;
 
+import java.util.ArrayList;
+import java.util.List;
+
+
 public class MethodParser {
 
     /**
@@ -20,6 +24,46 @@ public class MethodParser {
      * @return {@link MethodSignature} object filled with parsed values from source string
      */
     public MethodSignature parseFunction(String signatureString) {
-        throw new UnsupportedOperationException("You should implement this method.");
+        MethodSignature methodSignature=null;
+        List<String> list=new ArrayList<>();
+        List<MethodSignature.Argument> listArgum=new ArrayList<>();
+        MethodSignature.Argument argument=null;
+        String[] words=signatureString.split("[()]");
+        int i=0;
+        for (String word: words) {
+            if(i==0){
+                for (String item: word.split(" ")) {
+                    list.add(item);
+                }
+                i++;
+            }else{
+                String[] arr= word.split("(\\s)|(\\W\\s)");
+                for (int j=0; j<arr.length-1; j=j+2){
+                    argument=new MethodSignature.Argument(arr[j],arr[j+1]);
+                    listArgum.add(argument);
+                }
+            }
+        }
+
+        if(list==null){
+            throw new UnsupportedOperationException("You should implement this method.");
+        }
+
+        methodSignature=new MethodSignature(list.get(list.size()-1),listArgum);
+        if(list.size()==2){
+            methodSignature.setAccessModifier(null);
+            methodSignature.setReturnType(list.get(0));
+            methodSignature.setMethodName(list.get(1));
+        }else{
+            methodSignature.setAccessModifier(list.get(0));
+            methodSignature.setReturnType(list.get(1));
+            methodSignature.setMethodName(list.get(2));
+        }
+
+
+
+
+
+       return methodSignature;
     }
 }
